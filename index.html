@@ -1,0 +1,1558 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAFAGPT PRO — by RAPX</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Orbitron:wght@700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ===== THEME VARIABLES ===== */
+:root {
+  --accent: #00d4aa;
+  --accent2: #0090ff;
+  --bg-base: #0a0a0f;
+  --bg-sidebar: #111118;
+  --bg-chat: #0d0d14;
+  --bg-input: #1a1a24;
+  --bg-msg-ai: #161622;
+  --bg-msg-user: #0f2d4a;
+  --bg-card: #14141e;
+  --border: rgba(255,255,255,0.07);
+  --border-accent: rgba(0,212,170,0.3);
+  --text-primary: #e8e8f0;
+  --text-secondary: #8888aa;
+  --text-muted: #55556a;
+  --shadow: 0 8px 32px rgba(0,0,0,0.4);
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+
+/* THEME: OCEAN BLUE */
+[data-theme="ocean"] {
+  --accent: #0090ff;
+  --accent2: #00d4ff;
+  --bg-base: #060d1a;
+  --bg-sidebar: #080f1e;
+  --bg-chat: #0a1020;
+  --bg-input: #111828;
+  --bg-msg-ai: #0e1828;
+  --bg-msg-user: #0a2040;
+  --bg-card: #0d1525;
+  --border-accent: rgba(0,144,255,0.3);
+}
+
+/* THEME: SUNSET */
+[data-theme="sunset"] {
+  --accent: #ff6b35;
+  --accent2: #ff3d7f;
+  --bg-base: #120a08;
+  --bg-sidebar: #180e0a;
+  --bg-chat: #100c0a;
+  --bg-input: #1e1410;
+  --bg-msg-ai: #1a1208;
+  --bg-msg-user: #2a1008;
+  --bg-card: #161008;
+  --border-accent: rgba(255,107,53,0.3);
+}
+
+/* THEME: SAKURA */
+[data-theme="sakura"] {
+  --accent: #e879a0;
+  --accent2: #a855f7;
+  --bg-base: #0f080f;
+  --bg-sidebar: #140a14;
+  --bg-chat: #100a10;
+  --bg-input: #1e1020;
+  --bg-msg-ai: #180c18;
+  --bg-msg-user: #200828;
+  --bg-card: #160a16;
+  --border-accent: rgba(232,121,160,0.3);
+}
+
+/* THEME: MATRIX GREEN */
+[data-theme="matrix"] {
+  --accent: #00ff41;
+  --accent2: #00cc33;
+  --bg-base: #030d03;
+  --bg-sidebar: #050f05;
+  --bg-chat: #040c04;
+  --bg-input: #0a1a0a;
+  --bg-msg-ai: #071007;
+  --bg-msg-user: #0a1e0a;
+  --bg-card: #060e06;
+  --border-accent: rgba(0,255,65,0.25);
+}
+
+/* THEME: LIGHT */
+[data-theme="light"] {
+  --accent: #0066ff;
+  --accent2: #00aaff;
+  --bg-base: #f0f2f8;
+  --bg-sidebar: #e4e8f4;
+  --bg-chat: #f5f7fd;
+  --bg-input: #ffffff;
+  --bg-msg-ai: #eef0fa;
+  --bg-msg-user: #dce8ff;
+  --bg-card: #ffffff;
+  --border: rgba(0,0,0,0.08);
+  --border-accent: rgba(0,102,255,0.3);
+  --text-primary: #1a1a2e;
+  --text-secondary: #555580;
+  --text-muted: #9999bb;
+  --shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  height: 100vh;
+  overflow: hidden;
+  transition: background 0.4s, color 0.4s;
+}
+
+/* ===== AUTH SCREENS ===== */
+#authOverlay {
+  position: fixed; inset: 0;
+  background: var(--bg-base);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000;
+  transition: opacity 0.4s;
+}
+
+.auth-container {
+  width: min(440px, 94vw);
+  animation: slideUp 0.5s cubic-bezier(.22,1,.36,1);
+}
+
+@keyframes slideUp {
+  from { opacity:0; transform:translateY(24px); }
+  to { opacity:1; transform:none; }
+}
+
+.auth-logo {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.auth-logo-text {
+  font-family: 'Orbitron', monospace;
+  font-size: 32px;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 2px;
+}
+
+.auth-logo-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+  letter-spacing: 3px;
+  margin-top: 6px;
+  font-weight: 500;
+}
+
+.auth-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px;
+  box-shadow: var(--shadow);
+}
+
+.auth-tabs {
+  display: flex;
+  background: var(--bg-input);
+  border-radius: var(--radius-sm);
+  padding: 4px;
+  margin-bottom: 28px;
+  gap: 4px;
+}
+
+.auth-tab {
+  flex: 1;
+  padding: 9px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+.auth-tab.active {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 2px 12px rgba(0,212,170,0.3);
+}
+
+.auth-form { display: flex; flex-direction: column; gap: 14px; }
+.auth-form.hidden { display: none; }
+
+.field-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.field-input {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  padding: 11px 14px;
+  outline: none;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.field-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0,212,170,0.12);
+}
+
+.field-group { display: flex; flex-direction: column; }
+
+.auth-btn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border: none;
+  border-radius: var(--radius-sm);
+  color: #fff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+.auth-btn:hover { opacity: 0.88; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,212,170,0.3); }
+
+.auth-err {
+  font-size: 12px;
+  color: #ff4d6d;
+  text-align: center;
+  min-height: 16px;
+  font-weight: 500;
+}
+
+.auth-ok {
+  font-size: 12px;
+  color: var(--accent);
+  text-align: center;
+  min-height: 16px;
+  font-weight: 500;
+}
+
+.auth-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 16px;
+  line-height: 1.6;
+}
+
+/* ===== MAIN LAYOUT ===== */
+#mainApp {
+  display: none;
+  height: 100vh;
+  flex-direction: row;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width: 268px;
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  transition: all 0.3s;
+  position: relative;
+  z-index: 10;
+}
+
+.sidebar-header {
+  padding: 18px 16px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sidebar-logo {
+  font-family: 'Orbitron', monospace;
+  font-size: 15px;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.new-chat-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 7px 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+  margin: 12px 16px 0;
+  width: calc(100% - 32px);
+  align-self: center;
+}
+
+.new-chat-btn:hover {
+  background: rgba(255,255,255,0.09);
+  color: var(--text-primary);
+  border-color: var(--border-accent);
+}
+
+.sidebar-section-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  padding: 16px 16px 8px;
+  text-transform: uppercase;
+}
+
+.history-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 8px;
+}
+
+.history-list::-webkit-scrollbar { width: 3px; }
+.history-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.history-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 400;
+  transition: all 0.2s;
+  position: relative;
+  group: true;
+}
+
+.history-item:hover { background: rgba(255,255,255,0.05); color: var(--text-primary); }
+.history-item.active { background: rgba(0,212,170,0.1); color: var(--text-primary); border: 1px solid var(--border-accent); }
+
+.history-icon { font-size: 14px; flex-shrink: 0; opacity: 0.7; }
+.history-title { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.history-del {
+  opacity: 0;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.history-item:hover .history-del { opacity: 1; }
+.history-del:hover { color: #ff4d6d; background: rgba(255,77,109,0.1); }
+
+.history-empty {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 12px;
+  padding: 24px 16px;
+  line-height: 1.8;
+}
+
+/* Sidebar Bottom */
+.sidebar-bottom {
+  border-top: 1px solid var(--border);
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar-bottom-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.sidebar-bottom-btn:hover { background: rgba(255,255,255,0.05); color: var(--text-primary); }
+
+.user-avatar-sm {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* ===== MAIN CHAT ===== */
+.main-chat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-chat);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Top Bar */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-chat);
+  flex-shrink: 0;
+}
+
+.topbar-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  max-width: 400px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.quota-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: rgba(0,212,170,0.08);
+  border: 1px solid var(--border-accent);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.quota-chip.low { background: rgba(255,77,109,0.08); border-color: rgba(255,77,109,0.3); color: #ff4d6d; animation: pulse 1.5s infinite; }
+.quota-chip.unlimited { color: #ffd700; background: rgba(255,215,0,0.08); border-color: rgba(255,215,0,0.3); }
+@keyframes pulse { 50% { opacity: 0.5; } }
+
+.icon-btn {
+  width: 34px; height: 34px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 16px;
+  transition: all 0.2s;
+  position: relative;
+}
+.icon-btn:hover { background: rgba(255,255,255,0.08); color: var(--text-primary); }
+
+/* Theme Picker */
+.theme-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 8px;
+  display: none;
+  z-index: 100;
+  min-width: 200px;
+  box-shadow: var(--shadow);
+  animation: dropIn 0.2s ease;
+}
+@keyframes dropIn { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:none} }
+.theme-dropdown.open { display: block; }
+
+.theme-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  padding: 6px 8px 10px;
+  text-transform: uppercase;
+}
+
+.theme-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+}
+.theme-option:hover { background: rgba(255,255,255,0.05); color: var(--text-primary); }
+.theme-option.active { color: var(--accent); }
+
+.theme-dot {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ===== CHAT MESSAGES ===== */
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 0;
+  scroll-behavior: smooth;
+}
+
+.chat-messages::-webkit-scrollbar { width: 4px; }
+.chat-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.msg-group {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Welcome */
+.welcome-screen {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 60px 20px 40px;
+  text-align: center;
+}
+
+.welcome-icon {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.welcome-title {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(22px, 4vw, 32px);
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 10px;
+}
+
+.welcome-sub {
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin-bottom: 36px;
+  line-height: 1.6;
+}
+
+.suggestion-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  text-align: left;
+}
+
+.suggestion-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+.suggestion-card:hover {
+  border-color: var(--border-accent);
+  background: rgba(0,212,170,0.04);
+  transform: translateY(-2px);
+}
+
+.suggestion-icon { font-size: 18px; margin-bottom: 8px; }
+.suggestion-title { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 3px; }
+.suggestion-sub { font-size: 12px; color: var(--text-muted); }
+
+/* Messages */
+.message {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 20px;
+  animation: msgIn 0.3s cubic-bezier(.22,1,.36,1);
+}
+@keyframes msgIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+
+.message.user { flex-direction: row-reverse; }
+
+.msg-avatar {
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+  align-self: flex-start;
+}
+
+.message.ai .msg-avatar {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  font-family: 'Orbitron', monospace;
+  font-size: 9px;
+}
+
+.message.user .msg-avatar {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+
+.msg-content { flex: 1; max-width: 85%; }
+.message.user .msg-content { display: flex; justify-content: flex-end; }
+
+.msg-bubble {
+  padding: 13px 17px;
+  border-radius: var(--radius);
+  font-size: 14.5px;
+  line-height: 1.75;
+  font-weight: 400;
+  max-width: 100%;
+}
+
+.message.ai .msg-bubble {
+  background: var(--bg-msg-ai);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  border-radius: 4px var(--radius) var(--radius) var(--radius);
+}
+
+.message.user .msg-bubble {
+  background: var(--bg-msg-user);
+  border: 1px solid rgba(0,144,255,0.2);
+  color: var(--text-primary);
+  border-radius: var(--radius) 4px var(--radius) var(--radius);
+}
+
+.msg-bubble pre {
+  background: var(--bg-base);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  overflow-x: auto;
+  margin: 10px 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.msg-bubble code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  background: rgba(0,212,170,0.12);
+  color: var(--accent);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.msg-bubble pre code {
+  background: none;
+  color: #a8d8c8;
+  padding: 0;
+}
+
+.msg-bubble strong { color: var(--accent); font-weight: 600; }
+.msg-bubble ul, .msg-bubble ol { padding-left: 20px; margin: 8px 0; }
+.msg-bubble li { margin-bottom: 4px; }
+
+.msg-time {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 5px;
+  padding: 0 4px;
+}
+.message.user .msg-time { text-align: right; }
+
+/* Typing */
+.typing-indicator {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 20px;
+  align-items: flex-start;
+}
+
+.typing-bubble {
+  background: var(--bg-msg-ai);
+  border: 1px solid var(--border);
+  border-radius: 4px var(--radius) var(--radius) var(--radius);
+  padding: 14px 18px;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.typing-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.4;
+  animation: typingBounce 1.2s infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.15s; }
+.typing-dot:nth-child(3) { animation-delay: 0.3s; }
+@keyframes typingBounce { 0%,60%,100%{transform:translateY(0);opacity:0.4} 30%{transform:translateY(-7px);opacity:1} }
+
+/* ===== INPUT AREA ===== */
+.input-area {
+  padding: 16px 20px 20px;
+  background: var(--bg-chat);
+  flex-shrink: 0;
+}
+
+.input-wrap {
+  max-width: 780px;
+  margin: 0 auto;
+}
+
+.input-box {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 10px 10px 16px;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.input-box:focus-within {
+  border-color: var(--border-accent);
+  box-shadow: 0 0 0 3px rgba(0,212,170,0.08);
+}
+
+#msgInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14.5px;
+  font-weight: 400;
+  resize: none;
+  outline: none;
+  max-height: 160px;
+  line-height: 1.6;
+}
+
+#msgInput::placeholder { color: var(--text-muted); }
+
+.send-btn {
+  width: 38px; height: 38px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.send-btn:hover { opacity: 0.85; transform: scale(1.05); }
+.send-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+
+.input-footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  font-size: 11px;
+  color: var(--text-muted);
+  gap: 4px;
+}
+
+/* ===== SETTINGS PANEL ===== */
+.settings-panel {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(6px);
+  z-index: 500;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.settings-panel.open { display: flex; }
+
+.settings-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  width: min(480px, 94vw);
+  box-shadow: var(--shadow);
+  animation: slideUp 0.3s ease;
+}
+
+.settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.settings-title { font-size: 16px; font-weight: 700; }
+.close-btn {
+  background: none; border: none;
+  color: var(--text-secondary);
+  font-size: 20px;
+  cursor: pointer;
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+.close-btn:hover { background: rgba(255,255,255,0.06); color: var(--text-primary); }
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.settings-row:last-child { border-bottom: none; }
+.settings-row-label { font-size: 14px; font-weight: 500; }
+.settings-row-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+.user-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+}
+.user-badge.admin { background: rgba(255,215,0,0.12); color: #ffd700; border: 1px solid rgba(255,215,0,0.3); }
+.user-badge.trial { background: rgba(0,212,170,0.1); color: var(--accent); border: 1px solid var(--border-accent); }
+
+/* ===== SIDEBAR TOGGLE (mobile) ===== */
+.sidebar-toggle {
+  display: none;
+  width: 34px; height: 34px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  font-size: 18px;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.sidebar-toggle:hover { background: rgba(255,255,255,0.09); }
+
+@media (max-width: 700px) {
+  .sidebar {
+    position: fixed;
+    left: -280px;
+    top: 0; bottom: 0;
+    transition: left 0.3s ease;
+    z-index: 200;
+  }
+  .sidebar.open { left: 0; }
+  .sidebar-toggle { display: flex; }
+  .suggestion-grid { grid-template-columns: 1fr; }
+  .msg-content { max-width: 92%; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== AUTH OVERLAY ===== -->
+<div id="authOverlay">
+  <div class="auth-container">
+    <div class="auth-logo">
+      <div class="auth-logo-text">RAFAGPT PRO</div>
+      <div class="auth-logo-sub">BY RAPX DEVELOPMENT</div>
+    </div>
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <button class="auth-tab active" onclick="switchAuthTab('login')">Masuk</button>
+        <button class="auth-tab" onclick="switchAuthTab('register')">Daftar</button>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <div class="auth-form" id="loginForm">
+        <div class="field-group">
+          <div class="field-label">USERNAME</div>
+          <input class="field-input" id="loginUser" type="text" placeholder="Masukkan username...">
+        </div>
+        <div class="field-group">
+          <div class="field-label">PASSWORD</div>
+          <input class="field-input" id="loginPass" type="password" placeholder="Masukkan password...">
+        </div>
+        <div class="auth-err" id="loginErr"></div>
+        <button class="auth-btn" onclick="doLogin()">Masuk ke RAFAGPT PRO</button>
+      </div>
+
+      <!-- REGISTER FORM -->
+      <div class="auth-form hidden" id="registerForm">
+        <div class="field-group">
+          <div class="field-label">NAMA LENGKAP</div>
+          <input class="field-input" id="regName" type="text" placeholder="Nama kamu...">
+        </div>
+        <div class="field-group">
+          <div class="field-label">USERNAME</div>
+          <input class="field-input" id="regUser" type="text" placeholder="Buat username...">
+        </div>
+        <div class="field-group">
+          <div class="field-label">PASSWORD</div>
+          <input class="field-input" id="regPass" type="password" placeholder="Buat password...">
+        </div>
+        <div class="field-group">
+          <div class="field-label">KONFIRMASI PASSWORD</div>
+          <input class="field-input" id="regPass2" type="password" placeholder="Ulangi password...">
+        </div>
+        <div class="auth-err" id="regErr"></div>
+        <div class="auth-ok" id="regOk"></div>
+        <button class="auth-btn" onclick="doRegister()">Buat Akun</button>
+      </div>
+
+      <div class="auth-hint">
+        Akun Trial: 10 kuota gratis per sesi<br>
+        Hubungi RAPX untuk upgrade ke PRO
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SETTINGS PANEL ===== -->
+<div class="settings-panel" id="settingsPanel">
+  <div class="settings-card">
+    <div class="settings-header">
+      <div class="settings-title">⚙️ Pengaturan Akun</div>
+      <button class="close-btn" onclick="toggleSettings()">✕</button>
+    </div>
+    <div class="settings-row">
+      <div>
+        <div class="settings-row-label">Pengguna</div>
+        <div class="settings-row-sub" id="settingsUsername">—</div>
+      </div>
+      <div class="user-badge" id="settingsTierBadge">TRIAL</div>
+    </div>
+    <div class="settings-row">
+      <div>
+        <div class="settings-row-label">Sisa Kuota</div>
+        <div class="settings-row-sub">Kuota pesan tersisa</div>
+      </div>
+      <div style="font-size:18px;font-weight:700;color:var(--accent)" id="settingsQuota">10</div>
+    </div>
+    <div class="settings-row">
+      <div>
+        <div class="settings-row-label">Model AI</div>
+        <div class="settings-row-sub">Claude Sonnet (Anthropic)</div>
+      </div>
+      <div style="font-size:12px;color:var(--text-muted)">✓ Online</div>
+    </div>
+    <div class="settings-row">
+      <div>
+        <div class="settings-row-label">Hapus Semua History</div>
+        <div class="settings-row-sub">Tidak bisa dikembalikan</div>
+      </div>
+      <button onclick="clearAllHistory()" style="background:rgba(255,77,109,0.12);border:1px solid rgba(255,77,109,0.3);color:#ff4d6d;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif">Hapus</button>
+    </div>
+    <div style="margin-top:16px">
+      <button class="auth-btn" onclick="doLogout()">Keluar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MAIN APP ===== -->
+<div id="mainApp">
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">RAFAGPT PRO</div>
+    </div>
+
+    <button class="new-chat-btn" onclick="newChat()">
+      <span>✏️</span> Chat Baru
+    </button>
+
+    <div class="sidebar-section-title">Riwayat Chat</div>
+    <div class="history-list" id="historyList">
+      <div class="history-empty">Belum ada riwayat.<br>Mulai chat baru! 💬</div>
+    </div>
+
+    <div class="sidebar-bottom">
+      <button class="sidebar-bottom-btn" onclick="toggleSettings()">
+        <div class="user-avatar-sm" id="sidebarAvatar" style="background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff">R</div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600;color:var(--text-primary)" id="sidebarName">User</div>
+          <div style="font-size:11px;color:var(--text-muted)" id="sidebarTier">Trial</div>
+        </div>
+        <span style="font-size:14px;opacity:0.5">⚙️</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- MAIN CHAT -->
+  <div class="main-chat">
+    <!-- Topbar -->
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+        <div class="topbar-title" id="topbarTitle">Chat Baru</div>
+      </div>
+      <div class="topbar-right">
+        <div class="quota-chip" id="quotaChip">
+          <span>⚡</span>
+          <span id="quotaNum">10</span>
+        </div>
+        <div style="position:relative">
+          <button class="icon-btn" onclick="toggleTheme()" title="Tema">🎨</button>
+          <div class="theme-dropdown" id="themeDropdown">
+            <div class="theme-title">Pilih Tema</div>
+            <div class="theme-option active" onclick="setTheme('dark','🌑 Malam (Default)')">
+              <div class="theme-dot" style="background:linear-gradient(135deg,#00d4aa,#0090ff)"></div> 🌑 Malam
+            </div>
+            <div class="theme-option" onclick="setTheme('ocean','🌊 Samudra')">
+              <div class="theme-dot" style="background:linear-gradient(135deg,#0090ff,#00d4ff)"></div> 🌊 Samudra
+            </div>
+            <div class="theme-option" onclick="setTheme('sunset','🌅 Sunset')">
+              <div class="theme-dot" style="background:linear-gradient(135deg,#ff6b35,#ff3d7f)"></div> 🌅 Sunset
+            </div>
+            <div class="theme-option" onclick="setTheme('sakura','🌸 Sakura')">
+              <div class="theme-dot" style="background:linear-gradient(135deg,#e879a0,#a855f7)"></div> 🌸 Sakura
+            </div>
+            <div class="theme-option" onclick="setTheme('matrix','💻 Matrix')">
+              <div class="theme-dot" style="background:linear-gradient(135deg,#00ff41,#00cc33)"></div> 💻 Matrix
+            </div>
+            <div class="theme-option" onclick="setTheme('light','☀️ Terang')">
+              <div class="theme-dot" style="background:linear-gradient(135deg,#0066ff,#00aaff)"></div> ☀️ Terang
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="chat-messages" id="chatMessages">
+      <div id="welcomeScreen" class="welcome-screen">
+        <div class="welcome-icon">🤖</div>
+        <div class="welcome-title">RAFAGPT PRO</div>
+        <div class="welcome-sub">AI cerdas buatan RAPX Development.<br>Tanya apa saja, aku siap bantu!</div>
+        <div class="suggestion-grid">
+          <div class="suggestion-card" onclick="quickAsk('Buatkan script Python untuk automation file di komputer')">
+            <div class="suggestion-icon">🐍</div>
+            <div class="suggestion-title">Python Automation</div>
+            <div class="suggestion-sub">Script otomatis untuk produktivitas</div>
+          </div>
+          <div class="suggestion-card" onclick="quickAsk('Jelaskan cara kerja Firebase Realtime Database dan beri contoh kode-nya')">
+            <div class="suggestion-icon">🔥</div>
+            <div class="suggestion-title">Firebase Database</div>
+            <div class="suggestion-sub">Realtime DB, auth, dan integrasi</div>
+          </div>
+          <div class="suggestion-card" onclick="quickAsk('Buatkan landing page HTML CSS JS yang keren dan modern')">
+            <div class="suggestion-icon">🌐</div>
+            <div class="suggestion-title">Web Development</div>
+            <div class="suggestion-sub">HTML, CSS, JavaScript modern</div>
+          </div>
+          <div class="suggestion-card" onclick="quickAsk('Apa saja tips keamanan siber yang wajib diketahui pemula?')">
+            <div class="suggestion-icon">🔒</div>
+            <div class="suggestion-title">Keamanan Siber</div>
+            <div class="suggestion-sub">Tips & trik untuk melindungi diri</div>
+          </div>
+        </div>
+      </div>
+      <div class="msg-group" id="msgGroup"></div>
+    </div>
+
+    <!-- Input -->
+    <div class="input-area">
+      <div class="input-wrap">
+        <div class="input-box">
+          <textarea id="msgInput" rows="1" placeholder="Tanya RAFAGPT PRO apa saja..."
+            onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+          <button class="send-btn" id="sendBtn" onclick="sendMsg()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+        <div class="input-footer">
+          <span>RAFAGPT PRO · by RAPX Development · AI dapat membuat kesalahan</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== STATE =====
+let currentUser = null;
+let sessions = {};       // { id: { title, messages:[], history:[] } }
+let activeSessionId = null;
+let isLoading = false;
+let currentTheme = 'dark';
+
+// ===== USER DB (localStorage + built-in) =====
+const BUILTIN_USERS = {
+  rafa:  { password:'rapx',     tier:'admin', displayName:'Rafa Fauzan Kamil', quota:Infinity },
+};
+
+function getUsers() {
+  const stored = localStorage.getItem('rafagpt_users');
+  return stored ? { ...BUILTIN_USERS, ...JSON.parse(stored) } : { ...BUILTIN_USERS };
+}
+
+function saveUser(username, data) {
+  const users = getUsers();
+  users[username] = data;
+  // Don't save builtins
+  const toSave = {};
+  for (const [k,v] of Object.entries(users)) {
+    if (!BUILTIN_USERS[k]) toSave[k] = v;
+  }
+  localStorage.setItem('rafagpt_users', JSON.stringify(toSave));
+}
+
+// ===== AUTH TABS =====
+function switchAuthTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach((t,i) => {
+    t.classList.toggle('active', (i===0 && tab==='login') || (i===1 && tab==='register'));
+  });
+  document.getElementById('loginForm').classList.toggle('hidden', tab !== 'login');
+  document.getElementById('registerForm').classList.toggle('hidden', tab !== 'register');
+}
+
+// ===== LOGIN =====
+function doLogin() {
+  const u = document.getElementById('loginUser').value.trim().toLowerCase();
+  const p = document.getElementById('loginPass').value;
+  const err = document.getElementById('loginErr');
+  err.textContent = '';
+
+  if (!u || !p) { err.textContent = 'Username dan password wajib diisi.'; return; }
+
+  const users = getUsers();
+  if (users[u] && users[u].password === p) {
+    currentUser = { username: u, ...users[u] };
+    bootApp();
+  } else {
+    err.textContent = 'Username atau password salah.';
+  }
+}
+
+// ===== REGISTER =====
+function doRegister() {
+  const name = document.getElementById('regName').value.trim();
+  const u    = document.getElementById('regUser').value.trim().toLowerCase();
+  const p    = document.getElementById('regPass').value;
+  const p2   = document.getElementById('regPass2').value;
+  const err  = document.getElementById('regErr');
+  const ok   = document.getElementById('regOk');
+  err.textContent = ''; ok.textContent = '';
+
+  if (!name || !u || !p || !p2) { err.textContent = 'Semua kolom wajib diisi.'; return; }
+  if (u.length < 3) { err.textContent = 'Username minimal 3 karakter.'; return; }
+  if (p.length < 4) { err.textContent = 'Password minimal 4 karakter.'; return; }
+  if (p !== p2) { err.textContent = 'Password tidak cocok.'; return; }
+
+  const users = getUsers();
+  if (users[u]) { err.textContent = 'Username sudah digunakan.'; return; }
+
+  saveUser(u, { password: p, tier: 'trial', displayName: name, quota: 10 });
+  ok.textContent = '✓ Akun berhasil dibuat! Silakan masuk.';
+  setTimeout(() => switchAuthTab('login'), 1500);
+}
+
+// Keyboard Enter support
+['loginPass','regPass2'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('keydown', e => {
+    if (e.key === 'Enter') id === 'loginPass' ? doLogin() : doRegister();
+  });
+});
+
+// ===== BOOT APP =====
+function bootApp() {
+  document.getElementById('authOverlay').style.display = 'none';
+  const app = document.getElementById('mainApp');
+  app.style.display = 'flex';
+
+  // Load sessions
+  const stored = localStorage.getItem('rafagpt_sessions_' + currentUser.username);
+  sessions = stored ? JSON.parse(stored) : {};
+
+  // Set sidebar info
+  const initials = currentUser.displayName.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+  document.getElementById('sidebarAvatar').textContent = initials;
+  document.getElementById('sidebarName').textContent = currentUser.displayName;
+  document.getElementById('sidebarTier').textContent = currentUser.tier === 'admin' ? '★ Supreme Admin' : '◆ Trial Node';
+
+  // Load theme
+  const savedTheme = localStorage.getItem('rafagpt_theme') || 'dark';
+  applyTheme(savedTheme);
+
+  updateQuotaDisplay();
+  renderHistory();
+  newChat();
+}
+
+// ===== SESSIONS =====
+function saveSessions() {
+  localStorage.setItem('rafagpt_sessions_' + currentUser.username, JSON.stringify(sessions));
+}
+
+function newChat() {
+  const id = 'chat_' + Date.now();
+  sessions[id] = {
+    title: 'Chat Baru',
+    messages: [],
+    history: [],
+    createdAt: Date.now()
+  };
+  activeSessionId = id;
+  saveSessions();
+  renderHistory();
+  renderChat();
+  document.getElementById('topbarTitle').textContent = 'Chat Baru';
+}
+
+function loadSession(id) {
+  activeSessionId = id;
+  renderHistory();
+  renderChat();
+  document.getElementById('topbarTitle').textContent = sessions[id]?.title || 'Chat';
+  if (window.innerWidth <= 700) document.getElementById('sidebar').classList.remove('open');
+}
+
+function deleteSession(id, e) {
+  e.stopPropagation();
+  delete sessions[id];
+  saveSessions();
+  if (activeSessionId === id) {
+    const ids = Object.keys(sessions);
+    if (ids.length > 0) loadSession(ids[ids.length-1]);
+    else newChat();
+  }
+  renderHistory();
+}
+
+function clearAllHistory() {
+  sessions = {};
+  saveSessions();
+  toggleSettings();
+  newChat();
+}
+
+function renderHistory() {
+  const list = document.getElementById('historyList');
+  const ids = Object.keys(sessions).sort((a,b) => (sessions[b].createdAt||0) - (sessions[a].createdAt||0));
+
+  if (ids.length === 0) {
+    list.innerHTML = '<div class="history-empty">Belum ada riwayat.<br>Mulai chat baru! 💬</div>';
+    return;
+  }
+
+  list.innerHTML = ids.map(id => `
+    <div class="history-item ${id === activeSessionId ? 'active' : ''}" onclick="loadSession('${id}')">
+      <span class="history-icon">💬</span>
+      <span class="history-title">${escHTML(sessions[id].title)}</span>
+      <button class="history-del" onclick="deleteSession('${id}', event)" title="Hapus">🗑</button>
+    </div>
+  `).join('');
+}
+
+// ===== RENDER CHAT =====
+function renderChat() {
+  const group = document.getElementById('msgGroup');
+  const welcome = document.getElementById('welcomeScreen');
+  const sess = sessions[activeSessionId];
+
+  if (!sess || sess.messages.length === 0) {
+    welcome.style.display = 'block';
+    group.innerHTML = '';
+    return;
+  }
+
+  welcome.style.display = 'none';
+  group.innerHTML = sess.messages.map(m => buildMsgHTML(m.role, m.text, m.time)).join('');
+  scrollBottom();
+}
+
+function buildMsgHTML(role, text, time) {
+  const isAI = role === 'ai';
+  const sess = sessions[activeSessionId];
+  const initials = currentUser.displayName.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+  return `
+    <div class="message ${role}">
+      <div class="msg-avatar">${isAI ? 'AI' : initials}</div>
+      <div class="msg-content">
+        <div class="msg-bubble">${formatText(text)}</div>
+        <div class="msg-time">${time || ''}</div>
+      </div>
+    </div>
+  `;
+}
+
+// ===== SEND MESSAGE =====
+function quickAsk(text) {
+  document.getElementById('msgInput').value = text;
+  sendMsg();
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 160) + 'px';
+}
+
+async function sendMsg() {
+  if (isLoading) return;
+  const input = document.getElementById('msgInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  // Quota check
+  if (currentUser.quota !== Infinity) {
+    if (currentUser.quota <= 0) { showQuotaModal(); return; }
+    currentUser.quota--;
+    updateQuotaDisplay();
+  }
+
+  const sess = sessions[activeSessionId];
+  const time = new Date().toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit'});
+
+  // Hide welcome
+  document.getElementById('welcomeScreen').style.display = 'none';
+
+  // Add user message
+  sess.messages.push({ role:'user', text, time });
+  sess.history.push({ role:'user', content: text });
+  if (sess.title === 'Chat Baru') {
+    sess.title = text.length > 40 ? text.substring(0,40)+'...' : text;
+    document.getElementById('topbarTitle').textContent = sess.title;
+  }
+
+  input.value = '';
+  input.style.height = 'auto';
+  renderChat();
+
+  // Typing indicator
+  isLoading = true;
+  document.getElementById('sendBtn').disabled = true;
+  const typing = addTyping();
+
+  // System prompt
+  const isAdmin = currentUser.tier === 'admin';
+  const sysPrompt = isAdmin
+    ? `Kamu adalah RAFAGPT PRO, AI cerdas buatan RAPX Development yang diciptakan oleh Rafa Fauzan Kamil. Pengguna ini adalah sang Master Architect. Panggil dia "Boss Rafa" di awal percakapan. Gunakan Bahasa Indonesia yang profesional, tajam, dan teknikal. Kamu SANGAT ahli dalam: web development (HTML/CSS/JS), Firebase Realtime Database, Termux/Bash/Python, Acode, keamanan siber, dan pembuatan aplikasi keren. Berikan jawaban yang lengkap, detail, dan berbobot. Sertakan contoh kode kalau relevan. Jadilah AI yang paling gacor dan berguna!`
+    : `Kamu adalah RAFAGPT PRO, AI cerdas dan ramah buatan RAPX Development. Gunakan Bahasa Indonesia yang profesional namun mudah dipahami. Kamu ahli dalam programming, web development, Firebase, dan teknologi. Berikan jawaban yang lengkap, helpful, dan mudah dipahami. Sertakan contoh kode kalau relevan. Jadilah AI yang paling gacor!`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: sysPrompt,
+        messages: sess.history.slice(-20) // last 20 for context
+      })
+    });
+
+    const data = await res.json();
+    const reply = data.content?.[0]?.text || 'Maaf, terjadi kesalahan. Coba lagi ya.';
+    const replyTime = new Date().toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit'});
+
+    typing.remove();
+    sess.messages.push({ role:'ai', text: reply, time: replyTime });
+    sess.history.push({ role:'assistant', content: reply });
+    saveSessions();
+    renderChat();
+
+  } catch(err) {
+    typing.remove();
+    const errMsg = '⚠️ Gagal terhubung ke AI. Periksa koneksi internet kamu.';
+    sess.messages.push({ role:'ai', text: errMsg, time: new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}) });
+    renderChat();
+  }
+
+  isLoading = false;
+  document.getElementById('sendBtn').disabled = false;
+  renderHistory();
+}
+
+function addTyping() {
+  const group = document.getElementById('msgGroup');
+  const div = document.createElement('div');
+  div.className = 'typing-indicator';
+  div.innerHTML = `
+    <div class="msg-avatar" style="background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-family:'Orbitron',monospace;font-size:9px;width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0">AI</div>
+    <div class="typing-bubble">
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+    </div>`;
+  group.appendChild(div);
+  scrollBottom();
+  return div;
+}
+
+function scrollBottom() {
+  const el = document.getElementById('chatMessages');
+  el.scrollTop = el.scrollHeight;
+}
+
+// ===== FORMAT TEXT =====
+function formatText(t) {
+  t = escHTML(t);
+  t = t.replace(/```(\w+)?\n?([\s\S]*?)```/g, (_, lang, code) =>
+    `<pre><code>${code.trim()}</code></pre>`);
+  t = t.replace(/`([^`\n]+)`/g, '<code>$1</code>');
+  t = t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  t = t.replace(/^### (.+)$/gm, '<strong style="font-size:15px">$1</strong>');
+  t = t.replace(/^## (.+)$/gm, '<strong style="font-size:16px">$1</strong>');
+  t = t.replace(/^- (.+)$/gm, '• $1');
+  t = t.replace(/\n/g, '<br>');
+  return t;
+}
+
+function escHTML(t) {
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ===== QUOTA =====
+function updateQuotaDisplay() {
+  const chip = document.getElementById('quotaChip');
+  const num = document.getElementById('quotaNum');
+  const q = currentUser.quota;
+
+  if (q === Infinity) {
+    num.textContent = '∞';
+    chip.className = 'quota-chip unlimited';
+  } else {
+    num.textContent = q;
+    chip.className = 'quota-chip' + (q <= 3 ? ' low' : '');
+  }
+
+  // Settings panel
+  document.getElementById('settingsQuota').textContent = q === Infinity ? '∞ (Unlimited)' : q;
+}
+
+function showQuotaModal() {
+  alert('⚠️ Kuota habis!\n\nHubungi Rafa Fauzan Kamil (RAPX) untuk upgrade ke akses PRO dengan kuota unlimited.');
+}
+
+// ===== THEME =====
+function toggleTheme() {
+  document.getElementById('themeDropdown').classList.toggle('open');
+}
+
+function setTheme(theme, label) {
+  applyTheme(theme);
+  localStorage.setItem('rafagpt_theme', theme);
+  document.getElementById('themeDropdown').classList.remove('open');
+  document.querySelectorAll('.theme-option').forEach((el, i) => {
+    const themes = ['dark','ocean','sunset','sakura','matrix','light'];
+    el.classList.toggle('active', themes[i] === theme);
+  });
+}
+
+function applyTheme(theme) {
+  currentTheme = theme;
+  const body = document.body;
+  body.removeAttribute('data-theme');
+  if (theme !== 'dark') body.setAttribute('data-theme', theme);
+}
+
+// Close theme dropdown when clicking outside
+document.addEventListener('click', e => {
+  const dd = document.getElementById('themeDropdown');
+  if (dd && !dd.closest('.icon-btn') && !e.target.closest('#themeDropdown') && !e.target.closest('.icon-btn')) {
+    dd.classList.remove('open');
+  }
+});
+
+// ===== SETTINGS =====
+function toggleSettings() {
+  const panel = document.getElementById('settingsPanel');
+  const isOpen = panel.classList.toggle('open');
+  if (isOpen) {
+    document.getElementById('settingsUsername').textContent = currentUser.displayName + ' (@' + currentUser.username + ')';
+    document.getElementById('settingsTierBadge').textContent = currentUser.tier === 'admin' ? '★ ADMIN' : '◆ TRIAL';
+    document.getElementById('settingsTierBadge').className = 'user-badge ' + currentUser.tier;
+    updateQuotaDisplay();
+  }
+}
+
+// ===== SIDEBAR TOGGLE (mobile) =====
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+// ===== LOGOUT =====
+function doLogout() {
+  currentUser = null;
+  sessions = {};
+  activeSessionId = null;
+  isLoading = false;
+  document.getElementById('mainApp').style.display = 'none';
+  document.getElementById('authOverlay').style.display = 'flex';
+  document.getElementById('settingsPanel').classList.remove('open');
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+  document.getElementById('loginErr').textContent = '';
+  switchAuthTab('login');
+}
+</script>
+</body>
+</html>
